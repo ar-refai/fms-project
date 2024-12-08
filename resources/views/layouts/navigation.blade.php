@@ -30,16 +30,22 @@
                     <x-nav-link :href="route('banks.index')" :active="request()->routeIs('banks.index')">
                         {{ __('Banks') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('funds.index')" :active="request()->routeIs('funds.index')">
+                        {{ __('Funds') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('profiles.index')" :active="request()->routeIs('profiles.index')">
+                        {{ __('Profiles') }}
+                    </x-nav-link>
                 </div>
             </div>
 
             <!-- Settings Dropdown -->
+            @if (Auth::check())
             <div class="hidden sm:flex sm:items-center sm:ml-6">
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
                         <button class="inline-flex items-center px-3 py-2 text-sm font-medium leading-4 text-gray-500 transition duration-150 ease-in-out bg-gray-900 border border-transparent rounded-md dark:text-gray-400 dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none">
                             <div>{{ Auth::user()->name }}</div>
-
                             <div class="ml-1">
                                 <svg class="w-4 h-4 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
@@ -49,21 +55,6 @@
                     </x-slot>
 
                     <x-slot name="content">
-                        <x-dropdown-link :href="route('clients.index')">
-                            {{ __('Clients') }}
-                        </x-dropdown-link>
-                        <x-dropdown-link :href="route('incomes.index')">
-                            {{ __('Income') }}
-                        </x-dropdown-link>
-                        <x-dropdown-link :href="route('expenses.index')">
-                            {{ __('Expenses') }}
-                        </x-dropdown-link>
-                        <x-dropdown-link :href="route('treasury.index')">
-                            {{ __('Treasury') }}
-                        </x-dropdown-link>
-                        <x-dropdown-link :href="route('banks.index')">
-                            {{ __('Banks') }}
-                        </x-dropdown-link>
                         <x-dropdown-link :href="route('profile.edit')">
                             {{ __('Profile') }}
                         </x-dropdown-link>
@@ -80,6 +71,7 @@
                     </x-slot>
                 </x-dropdown>
             </div>
+            @endif
 
             <!-- Hamburger -->
             <div class="flex items-center -mr-2 sm:hidden">
@@ -114,9 +106,16 @@
             <x-responsive-nav-link :href="route('banks.index')" :active="request()->routeIs('banks.index')">
                 {{ __('Banks') }}
             </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('funds.index')" :active="request()->routeIs('funds.index')">
+                {{ __('Funds') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('profiles.index')" :active="request()->routeIs('profiles.index')">
+                {{ __('Profiles') }}
+            </x-responsive-nav-link>
         </div>
 
         <!-- Responsive Settings Options -->
+        @if (Auth::check())
         <div class="pt-4 pb-1 border-t border-gray-200 dark:border-gray-600">
             <div class="px-4">
                 <div class="text-base font-medium text-gray-800 dark:text-gray-200">{{ Auth::user()->name }}</div>
@@ -139,5 +138,6 @@
                 </form>
             </div>
         </div>
+        @endif
     </div>
 </nav>

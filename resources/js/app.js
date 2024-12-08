@@ -26,6 +26,8 @@ function initializeDataTable(selector, config = {}) {
 
 // Initialize DataTables for clientsTable
 initializeDataTable('#clientsTable');
+initializeDataTable('#dashboard-one');
+
 
 // Initialize DataTables for incomesTable
 initializeDataTable('#incomesTable');

@@ -133,7 +133,6 @@ div.dt-container .dt-paging .dt-paging-button.disabled{
 
 }
 
-
 #treasuriesTable_length select {
     padding:5px 15px;
 }
@@ -145,3 +144,24 @@ div.dt-container .dt-paging .dt-paging-button.disabled{
 #transactionsTable_filter {
     margin-bottom: 20px  !important;
 }
+
+#fundsTable_filter {
+    margin-bottom: 20px  !important;
+}
+
+#fundsTable_filter select    {
+    padding: 5px 15px  !important;
+}
+
+
+
+#dashboard-one_filter {
+    color:white;
+    margin-bottom: 20px !important;
+}
+
+#dashboard-one_info
+{
+    color:white;
+}
+

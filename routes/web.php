@@ -2,11 +2,14 @@
 
 use App\Http\Controllers\BanksController;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\ExcelImportController;
 use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\IncomeController;
 use App\Http\Controllers\TreasuryController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\FundsController;
+use App\Http\Controllers\ProfilesController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\QuotationController;
 use Illuminate\Support\Facades\Route;
@@ -15,13 +18,6 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
-
-// // Main Dashboard
-// Route::get('/dashboard', function () {
-//     return view('dashboard');
-// })->name('dashboard');
-
-
 
 // CRUD Routes for Clients
 Route::middleware(['auth', 'verified'])->group(function () {
@@ -71,19 +67,30 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/start', [TreasuryController::class, 'startTreasury'])->name('treasury.start');
 
     });
-        // CRUD Routes for Treasury Entries
-        Route::prefix('banks')->group(function () {
-            Route::get('/', [BanksController::class, 'index'])->name('banks.index');
-            Route::get('/create', [BanksController::class, 'create'])->name('banks.create');
-            Route::post('/', [BanksController::class, 'store'])->name('banks.store');
-            Route::get('/{id}', [BanksController::class, 'show'])->name('banks.show');
-            Route::get('/{id}/edit', [BanksController::class, 'edit'])->name('banks.edit');
-            Route::put('/{id}', [BanksController::class, 'update'])->name('banks.update');
-            Route::delete('/{id}', [BanksController::class, 'destroy'])->name('banks.destroy');
-            // Route to start the banks :
-            Route::post('/start', [BanksController::class, 'startBank'])->name('banks.start');
+    // CRUD Routes for Bank Entries
+    Route::prefix('banks')->group(function () {
+        Route::get('/', [BanksController::class, 'index'])->name('banks.index');
+        Route::get('/create', [BanksController::class, 'create'])->name('banks.create');
+        Route::post('/', [BanksController::class, 'store'])->name('banks.store');
+        Route::get('/{id}', [BanksController::class, 'show'])->name('banks.show');
+        Route::get('/{id}/edit', [BanksController::class, 'edit'])->name('banks.edit');
+        Route::put('/{id}', [BanksController::class, 'update'])->name('banks.update');
+        Route::delete('/{id}', [BanksController::class, 'destroy'])->name('banks.destroy');
+        // Route to start the banks :
+        Route::post('/start', [BanksController::class, 'startBank'])->name('banks.start');
 
-        });
+    });
+
+    // CRUD Routes for Funds Entries
+    Route::prefix('funds')->group(function () {
+        Route::get('/', [FundsController::class, 'index'])->name('funds.index');
+        Route::get('/create', [FundsController::class, 'create'])->name('funds.create');
+        Route::post('/', [FundsController::class, 'store'])->name('funds.store');
+        Route::get('/{id}', [FundsController::class, 'show'])->name('funds.show');
+        Route::get('/{id}/edit', [FundsController::class, 'edit'])->name('funds.edit');
+        Route::put('/{id}', [FundsController::class, 'update'])->name('funds.update');
+        Route::delete('/{id}', [FundsController::class, 'destroy'])->name('funds.destroy');
+    });
 
     // CRUD Routes for Projects Entries
     Route::prefix('projects')->group(function () {
@@ -95,10 +102,22 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::put('/{id}', [ProjectController::class, 'update'])->name('projects.update');
         Route::delete('/{id}', [ProjectController::class, 'destroy'])->name('projects.destroy');
     });
+    // Main Dashboard
     Route::prefix('quotations')->group(function () {
             Route::post('/', [QuotationController::class, 'store'])->name('quotations.store');
     });
+    // Profiles Pages
+    Route::prefix('profiles')->group(function () {
+        Route::get('/', [ProfilesController::class, 'index'])->name('profiles.index');
+        Route::get('/{id}', [ProfilesController::class, 'show'])->name('profiles.show');
+    });
 });
+
+
+Route::get('import', [ExcelImportController::class, 'showForm'])->name('import.form');
+Route::post('import', [ExcelImportController::class, 'import'])->name('import');
+Route::post('/import-treasury', [TreasuryController::class, 'importTreasuryData'])->name('treasury.import');
+
 
 // dashboard
 Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');

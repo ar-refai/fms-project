@@ -151,11 +151,12 @@
 
                 <!-- Other Designation (Utilities) -->
                 <div id="designation_other_wrapper" class="hidden">
-                    <label for="designation_other" class="block text-sm">Other Options</label>
-                    <select name="designation" id="designation_other"
+                    <label for="designation_other" class="block text-sm">Other Option</label>
+                    {{-- <select name="designation" id="designation_other"
                         class="w-full p-2 mt-2 text-gray-100 bg-gray-700 rounded-md">
                         <option value="utilities">Utilities</option>
-                    </select>
+                    </select> --}}
+                    <input type="text" name="designation" id="designation_other" class="w-full p-2 mt-2 text-gray-100 bg-gray-700 rounded-md"/>
                 </div>
 
                 <!-- Basis (Project) -->

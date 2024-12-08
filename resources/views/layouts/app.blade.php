@@ -18,7 +18,7 @@
         <!-- Laravel Vite -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-        <!-- Additional Styles -->
+        <!-- Additional Style   s -->
         @stack('styles')
 
         <style>

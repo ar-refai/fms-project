@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Treasury;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class TreasuryController extends Controller
 {
@@ -182,6 +184,7 @@ class TreasuryController extends Controller
         }
     }
 
+
     /**
      * Remove the specified treasury record from storage.
      */
@@ -199,4 +202,73 @@ class TreasuryController extends Controller
             return redirect()->route('treasury.index')->withErrors(['error' => 'Failed to delete treasury record. Please try again later.']);
         }
     }
+
+    public function importTreasuryData(Request $request)
+    {
+        // Validate the uploaded file
+        $request->validate(['file' => 'required|file|mimes:csv,txt']);
+
+        try {
+            // Load and parse the CSV file
+            $file = $request->file('file');
+            $data = array_map('str_getcsv', file($file->getRealPath()));
+
+            // Extract headers and clean them
+            $headers = array_map(fn($header) => trim(preg_replace('/\xEF\xBB\xBF/', '', $header)), array_shift($data));
+
+            // Initialize auto-incrementing treasury_id starting from the last existing ID
+            $lastTreasuryId = Treasury::latest('id')->value('treasury_id');
+            $nextId = $lastTreasuryId ? intval(substr($lastTreasuryId, 1)) + 1 : 1;
+
+            // Process each row in the data
+            foreach ($data as $row) {
+                // Combine the row with headers to create an associative array
+                $rowData = array_combine($headers, $row);
+
+                // Skip rows that are empty or invalid
+                if (empty($rowData) || empty($rowData['date']) || empty($rowData['type'])) {
+                    continue;
+                }
+
+                // Generate treasury_id (e.g., T0001, T0002, ...)
+                $treasuryId = sprintf('T%04d', $nextId++);
+
+                // Parse and format the date (e.g., DD/MM/YYYY to YYYY-MM-DD)
+                try {
+                    $formattedDate = Carbon::createFromFormat('d/m/Y', trim($rowData['date']))->format('Y-m-d');
+                } catch (\Exception $e) {
+                    Log::warning("Invalid date format for row: " . json_encode($rowData));
+                    continue; // Skip rows with invalid dates
+                }
+
+                // Clean the description field
+                $cleanedDescription = preg_replace('/[^\x20-\x7E]/u', '', trim($rowData['description'] ?? ''));
+
+                // Parse numeric fields and handle potential formatting issues
+                $startingBalance = isset($rowData['starting_balance']) ? (float) str_replace(',', '', $rowData['starting_balance']) : 0;
+                $amount = isset($rowData['amount']) ? (float) str_replace(',', '', $rowData['amount']) : 0;
+                $endingBalance = isset($rowData['ending_balance']) ? (float) str_replace(',', '', $rowData['ending_balance']) : 0;
+
+                // Insert the new treasury record
+                Treasury::create([
+                    'treasury_id' => $treasuryId,
+                    'date' => $formattedDate,
+                    'starting_balance' => $startingBalance,
+                    'type' => trim($rowData['type']),
+                    'amount' => $amount,
+                    'description' => $cleanedDescription,
+                    'ending_balance' => $endingBalance,
+                ]);
+            }
+
+            return back()->with('success', 'Treasury data imported successfully.');
+        } catch (\Exception $e) {
+            Log::error('Error importing treasury data: ' . $e->getMessage());
+            return back()->withErrors(['error' => 'An error occurred while importing the treasury data. Please check the file and try again.']);
+        }
+    }
+
+
+
+
 }

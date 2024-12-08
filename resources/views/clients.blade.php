@@ -566,7 +566,14 @@
                                             @foreach ($clients as $client)
                                                 <tr>
                                                     <td>{{ $client->client_code }}</td>
-                                                    <td>{{ $client->client_name }}</td>
+                                                    <td>
+                                                        <a href="{{ route('profiles.show', $client->id) }}"
+                                                            class="block p-2 font-semibold text-center text-blue-600 transition duration-200 rounded-lg hover:text-blue-700 hover:underline dark:text-blue-500 dark:hover:text-blue-600 ">
+
+                                                            >
+                                                        {{ $client->client_name }}
+                                                        <a/>
+                                                    </td>
                                                     <td>{{ $client->client_type }}</td>
                                                     <td>{{ $client->client_source }}</td>
 
